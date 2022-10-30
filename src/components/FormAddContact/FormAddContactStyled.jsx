@@ -7,6 +7,7 @@ margin-bottom: 10px;
 
 export const LabelForm = styled.label`
 margin-right: 10px;
+
 `
 
 export const Button = styled.button`
@@ -17,6 +18,8 @@ background-color: black;
 border: 1px black solid;
 color: white;
 border-radius: 10%;
+
+
 &:hover{
     background-color: green;
 border: 1px black solid;

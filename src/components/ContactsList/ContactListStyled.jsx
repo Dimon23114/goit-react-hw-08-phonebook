@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+
 export const List = styled.li`
 list-style:none;
 
@@ -17,5 +18,8 @@ color: white;
 border: none;
 border-radius: 4px;
 &:hover,
-&:focus {background-color: red;}
+&:focus {
+    background-color: red;
+}
+
 `

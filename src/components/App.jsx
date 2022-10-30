@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid';
 import { Filter } from './Filter/Filter';
 import {Conteiner} from './AppStyled';
 
+
+
 export class App extends Component {
   state = {
     contacts: [
@@ -20,10 +22,10 @@ export class App extends Component {
     if (this.isDublicate(data)) {
       return alert(
         `Контакт ${data.name} з номером ${data.number} вже є в списку контактів`
-      )
+      );
     }
     this.setState(prev => {
-      const newContact ={
+      const newContact = {
         id: nanoid(),
         ...data,
       };
@@ -48,7 +50,7 @@ export class App extends Component {
   isDublicate({ name, number }) {
     const { contacts } = this.state;
     const result = contacts.find(
-      contact => contact.name === name && contact.number ===number
+      contact => contact.name === name && contact.number === number
     );
     return result;
   }
@@ -60,19 +62,20 @@ export class App extends Component {
     });
   };
 
-  getFilterContacts() {
-    const { contact, filter } = this.state;
+  getFilteredContacts() {
+    const { contacts, filter } = this.state;
 
-    if(!filter) {
+    if (!filter) {
       return contacts;
     }
 
     const normalizedFilter = filter.toLocaleLowerCase();
+
     const filteredContacts = contacts.filter(({ name, number }) => {
       const normalizedName = name.toLocaleLowerCase();
       const normalizedNumber = number.toLocaleLowerCase();
       const result =
-        normalizedName.includes(normalizedFilter);
+        normalizedName.includes(normalizedFilter) ||
         normalizedNumber.includes(normalizedFilter);
       return result;
     });
@@ -82,15 +85,16 @@ export class App extends Component {
   render() {
     const { addContact, handleChange, deleteContacts } = this;
     const { filter } = this.state;
-    const contacts = this.getFilterContacts();
+    const contacts = this.getFilteredContacts();
     return (
       <Conteiner>
         <h1>PhoneBook</h1>
-        <FormAddContact onSubmit={addContact}/>
-        <h2>Contact</h2>
+        <FormAddContact onSubmit={addContact} />
+        <h2>Contacts</h2>
         <Filter items={filter} onChange={handleChange} />
+
         <ContactsList items={contacts} deleteContacts={deleteContacts} />
       </Conteiner>
-    )
+    );
   }
-} 
+}
