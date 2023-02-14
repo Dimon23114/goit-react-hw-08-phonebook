@@ -12,7 +12,7 @@ const Filter = () => {
     const value = e.currentTarget.value;
     dispatch(filterContacts(value));
   };  
-  
+   
 
     return(
         <LabelBox>

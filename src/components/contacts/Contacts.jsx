@@ -1,33 +1,61 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeContact } from '../../redux/contactsSlice';
-import { getContacts, getFilter } from '../../redux/selectors';
-import { ListContacts, ButtonDel } from './ContactsStyled';
+// import { Navigate } from "react-router-dom";
+import { fetchContacts, deleteContact } from '../../redux/operations';
+import { getFilter, getItems } from '../../redux/selectors';
+import Filter from 'components/filter/Filter';
+import Form from '../form/Form'
+import { SecondaryTitleBox, ListContacts, ListItem, ButtonDel, DivContainer } from './ContactsStyled';
+
 
 const Contacts = () => {
-  const contacts = useSelector(getContacts);
   const filter = useSelector(getFilter);
+  const items = useSelector(getItems);
+  // const isLoged = useSelector(getIsLoged);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   const contactFiltering = () => { 
     const normalizeFilter = filter.toLowerCase();
-    return contacts.filter(contact => contact.name.toLowerCase().includes(normalizeFilter))
+    if(items.length !== 0){
+    return items.filter(item => item.name.toLowerCase().includes(normalizeFilter))
+    } else if(items.length === 0){
+      return;
+    }
   };
 
-  const filteredContacts = contactFiltering();
+  const filteredContacts = contactFiltering(); 
 
-
+  // if (!isLoged) {
+  //   return <Navigate to="/login"/>
+  // };
+  
+ 
   return (
-    <ListContacts>
-      {filteredContacts.map(({ id, name, number }) => 
-        <li key={id}>
+    <DivContainer > 
+    <Form/>
+    <SecondaryTitleBox>Contacts</SecondaryTitleBox>
+    {items.length !== 0 && (
+        <ListContacts>
+          {
+     filteredContacts.map(({ id, name, number }) => 
+        <ListItem key={id}>
           {name}: {number}
           <ButtonDel type='button' onClick={() => {
-                dispatch(removeContact(id));
+                dispatch(deleteContact(id));
               }}>Delete</ButtonDel> 
-        </li>)
-      }   
-     
-    </ListContacts>
+        </ListItem>)
+      }  
+        </ListContacts>
+      )}
+      {items.length === 0 && (
+        <p>There`s no contacts yet</p>
+      )}
+    <Filter/>
+    </DivContainer >
   )   
 }
 

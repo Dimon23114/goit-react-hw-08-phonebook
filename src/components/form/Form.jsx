@@ -1,8 +1,10 @@
 import { nanoid } from 'nanoid';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
-import { getContacts } from '../../redux/selectors';
+import { addContact } from '../../redux/operations';
+import { getItems } from '../../redux/selectors';
 import { FormBox, ButtonAdd, InputBox, LabelBox } from './FormStyled';
 
 
@@ -15,54 +17,77 @@ const Form = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
-  const contacts = useSelector(getContacts);
+  const items = useSelector(getItems);
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
-    // const target = e.target.type;
-    // const val = e.target.value;
-    const {value, name} = e.target;  
+    const {name, value} = e.currentTarget;  
     
     switch(name) {
       case "number":
-        setNumber(value); 
-        break;
+        return setNumber(value); 
       case "name":
-        setName(value); 
-        break;
+        return setName(value); 
       default:
       return;
     }
   };
 
   
-  const chekingContacts = () => {
-    const findContact = contacts.find((contact) => contact.name === name);
+  // const chekingContacts = () => {
+  //   const findContact = items.find((item) => item.name === name);
+  //   const findNumber = items.find((item) => item.number === number);
 
-    if (findContact) { 
-      alert(`${name} is already in contacts`);      
-    } 
-      else { 
-      alert(`${name} has been added`);
-      return (dispatch(addContact(name, number)))      
-    }             
-  };
-
-
+  //   if (findContact) { 
+  //     toast.warn(`${name} is already in contacts`, 
+  //     {
+  //       dragable: true,
+  //       position: toast.POSITION.TOP_RIGHT,
+  //       autoClose: 2000,
+  //     }
+  //     );
+  //     setName('');
+  //    return; 
+  //   } 
+  //     else if (findNumber) { 
+  //       toast.warn(`${number} is already in contacts`, 
+  //       {
+  //         dragable: true,
+  //         position: toast.POSITION.TOP_RIGHT,
+  //         autoClose: 2000,
+  //       });  
+  //       setNumber('');  
+  //     return;    
+  //   }             
+  // };
+  
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    chekingContacts();
-    
+    const findContact = items.find((item) => item.name === name);
+    if (findContact) { 
+      toast.warn(`${name} is already in contacts`, 
+      {
+        dragable: true,
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      }
+      );
+      setName('');
+      setNumber('');
+     return; 
+    } 
+    // chekingContacts();
+    dispatch(addContact({name, number}));
     setName('');
     setNumber('');
-      };
+    };
 
 
   return(
     <FormBox>
-      <form action="" onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <LabelBox>Name
           <InputBox
             type="text"
@@ -88,9 +113,10 @@ const Form = () => {
             id={numberInputId}            
           />  
         </LabelBox>
-      
+          
         <ButtonAdd type="submit">Add contact</ButtonAdd>
       </form>
+      <ToastContainer style={{ fontSize: '20px' }} />
     </FormBox>  
   )
 }
